@@ -2,7 +2,7 @@
 Configurando un cluster Kubernetes HA en Bare Metal:
 =================================================
 **Instalacion DocKer**
-
+```
 $ apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
 $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -12,7 +12,7 @@ $add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu x
 $ apt-cache madison docker-ce
 $ apt-get install -y docker-ce=17.03.3~ce-0~ubuntu-xenial
 	NOTA: se puede instalar la version que se necesite
-	
+```	
 **Instalación de Kubernetes**
 ```
 	$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
@@ -22,14 +22,14 @@ $ apt-get install -y docker-ce=17.03.3~ce-0~ubuntu-xenial
 	$ apt-get install -y kubeadm=1.9.11-00 kubelet=1.9.11-00 kubectl=1.9.11-00 kubernetes-cni=0.6\*
 
 ```
-**Requirements:**
+**Requisitos:**
 
  - Mínimo de tres nodos de Ubuntu (estos serían nodos maestros)
     - Esto manejará al menos una falla maestra. Para manejar dos fallas maestras, necesitamos cinco nodos maestros.
  - Nodos de trabajo (opcional puede ser 0 a n)
  - IP VIRTUAL (para  keepalived)
 
-**Setup:**
+**Instalar:**
 
 1. Preparar los sistemas:
 	- Desactivar intercambio en todos los nodos (sudo swapoff -a)
@@ -45,8 +45,9 @@ $ apt-get install -y docker-ce=17.03.3~ce-0~ubuntu-xenial
 			NOTA: por defecto tiene tres archivos que se ejecutan segun los nodos maestros, ya tiene configurado las ip y los nombres
 	- Esto iniciará el contenedor docker etcd en los tres nodos..
 	- Para probar la instalación. (para ver si los tres nodos son miembros del cluster etcd):
+	```
 	  $ docker exec etcd /bin/sh -c "export ETCDCTL_API=3 && /usr/local/bin/etcdctl member list"
-
+	```
 3. Ejecute la configuración de inicio de Kubeadm para configurar el primer maestro "solo ejecutar en el primer maestro".
 	- Edite el archivo kubeClusterInitConfig/kubeadm-init.yaml con las direcciones IP y los nombres de los tres nodos. 
           NOTA: la IP virtual se debe agregar al campo apiServerCertSANs junto con los nodos maestros IP y nombres.
