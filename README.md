@@ -1,5 +1,5 @@
 
-Configurando un cluster Kubernetes HA en Bare Metal:
+Configurando un cluster Kubernetes HA:
 =================================================
 **Instalacion DocKer**
 ```
