@@ -90,7 +90,7 @@ Si después de esperar unos minutos, el maestro aún está en el estado de No Pr
 
 	$ passwd root
 		--agregando la nueva clave de root para ssh, luego cambiando el acceso en el archivo
-	$ nano /etc/ssh/sshd.config
+	$ nano /etc/ssh/sshd_config
 		-- permitiendo el acceso a root
 		-- descomentar PermitRootLogin Yes
 		-- reiniciar sshd

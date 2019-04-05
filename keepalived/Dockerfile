@@ -5,4 +5,4 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositorie
 COPY run.sh /run.sh
 COPY keepalived.conf /etc/keepalived/keepalived.conf
 
-ENTRYPOINT [ "chmod +x /run.sh" ]
+ENTRYPOINT [ "/run.sh" ]
