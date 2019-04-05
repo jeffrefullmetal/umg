@@ -1,0 +1,30 @@
+
+Setup:
+======
+
+1. Edite el archivo nginx-lb.conf con las direcciones IP de todos los maestros en el clúster.
+	NOTA: por defecto trae las IP´S (10.0.0.21,10.0.0.22,10.0.0.23)
+2. Comience lb con: 
+	$ docker-compose -f docker-compose.yaml up -d
+3. Detener lb con:
+	NOTA:importante detenerlo en todos los maestros para poder modificar el proxy
+	$ docker-compose stop
+4. Una vez instalado, edite la configuración del proxy de kube en cada maestro:
+	$ kubectl edit configmap kube-proxy -n kube-system
+		buscar "server:" y reemplace la dirección en ella con la ip virtual de la siguiente manera:  "server: https://<virtual ip>:16443"
+5. Reiniciar todo los  kube-proxy's (eliminando los existentes, para reiniciar nuevos):
+	$ kubectl get pods --all-namespaces -o wide | grep proxy    // Lista de todos los proxy en ejecución
+	$ kubectl delete pod --namespace=kube-system kube-proxy-wqm2h // Comando para usar para eliminar el proxy
+
+6. Para asegurarse de que el proxy de kube haya aparecido correctamente, verifique los registros del proxy:
+	$ kubectl logs --namespace=kube-system kube-proxy-w2sn2 | less
+
+Solución de problemas:
+================
+
+Limpiar nginx lb:
+Vaya al directorio donde está el archivo de composición y emita:
+ 1. docker-compose ps // para ver el estado de la lb
+ 2. docker-compose stop // para detener la pila
+ 3. docker-compose -f docker-compose.yaml rm -f // Eliminar/eliminar la pila
+

@@ -1,0 +1,21 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+nodeName: "kub02"
+etcd:
+  endpoints:
+  - "http://10.0.0.21:2379"
+  - "http://10.0.0.22:2379"
+  - "http://10.0.0.23:2379"
+apiServerExtraArgs:
+  apiserver-count: "3"
+networking:
+  podSubnet: "10.244.0.0/16"
+apiServerCertSANs:
+- "kub01"
+- "kub02"
+- "kub03"
+- "10.0.0.21"
+- "10.0.0.22"
+- "10.0.0.23"
+- "10.0.0.28"
+- "127.0.0.1"

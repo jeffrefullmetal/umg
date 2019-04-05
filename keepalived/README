@@ -1,0 +1,38 @@
+
+
+Keepalived toma una IP virtual como argumento y la vincula a uno de los nodos maestros. Cuando se produce un error en el nodo maestro, migra la IP virtual a un nodo de respaldo, convirtiéndolo en el maestro.
+Por lo tanto, cualquier falla de nodo es opaca para el usuario desde un punto de vista de accesibilidad.
+
+Para construir una imagen docker:
+
+$ docker build -t user/keepalived .
+
+Para ejecutar keepalived (debe ejecutarse en todos los maestros):
+
+docker run --name keepalived --restart always -d -e KEEPALIVED_PRIORITY=$priority -e KEEPALIVED_VIRTUAL_IP=$VIP -e KEEPALIVED_PASSWORD=$password -e KEEPALIVED_STATE=$node-state \
+    -e KEEPALIVED_INTERFACE=$nw-interface --net=host --privileged=true user/keepalived
+
+NOTA:
+1. KEEPALIVED_STATE toma dos valores MASTER o BACKUP. Si hay más de un nodo en el clúster, uno de ellos será MASTER y el resto será BACKUP.
+2. KEEPALIVED_PRIORITY en el MASTER debe ser mayor que KEEPALIVED_PRIORITY en BACKUP. Ejemplo: 101 en MASTER y 100 en BACKUP.
+
+
+Ejemplo:
+
+Si hay tres maestros:
+
+master1:
+
+docker run --name keepalived --restart always -d -e KEEPALIVED_PRIORITY='101' -e KEEPALIVED_VIRTUAL_IP='xxx.xxx.xxx.xxx' -e KEEPALIVED_PASSWORD='pass' -e KEEPALIVED_STATE='MASTER' \
+-e KEEPALIVED_INTERFACE='ens160' --net=host --privileged=true karthik/keepalived
+
+master2: 
+
+docker run --name keepalived --restart always -d -e KEEPALIVED_PRIORITY='100' -e KEEPALIVED_VIRTUAL_IP='xxx.xxx.xxx.xxx' -e KEEPALIVED_PASSWORD='pass' -e KEEPALIVED_STATE='BACKUP' \
+-e KEEPALIVED_INTERFACE='ens160' --net=host --privileged=true karthik/keepalived
+
+
+master3:
+
+docker run --name keepalived --restart always -d -e KEEPALIVED_PRIORITY='100' -e KEEPALIVED_VIRTUAL_IP='xxx.xxx.xxx.xxx' -e KEEPALIVED_PASSWORD='pass' -e KEEPALIVED_STATE='BACKUP' \
+-e KEEPALIVED_INTERFACE='ens160' --net=host --privileged=true karthik/keepalived
